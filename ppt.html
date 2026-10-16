@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Inter:wght@300;400;600;700&family=Montserrat:ital,wght@0,400;0,700;0,800;0,900;1,400&family=Oswald:wght@300;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
+/* Theme Colors & Global Design Tokens */
 :root{
   --navy:#030508;
   --navy-2:#090e17;
@@ -24,6 +25,7 @@
   --ease:cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* Global Reset & Base Page Styles */
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{
   height:100%; width:100%; overflow:hidden;
@@ -50,6 +52,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
   box-shadow: 0 0 10px var(--gold);
 }
 
+/* Touchscreen Cursor Fallback */
 @media (hover: none) {
   .cursor, .cursor-dot { display: none !important; }
   body { cursor: auto; }
@@ -454,6 +457,8 @@ h1, h2, h3, h4 { font-family:'Cinzel', serif; letter-spacing:1px; }
 </head>
 <body>
 
+<!-- Background Effects & Decorative Overlays -->
+
 <div class="tactical-bg"></div>
 <div class="scanline"></div>
 <div class="vignette"></div>
@@ -461,19 +466,23 @@ h1, h2, h3, h4 { font-family:'Cinzel', serif; letter-spacing:1px; }
 <div class="cursor-dot"></div>
 <canvas id="bg-canvas"></canvas>
 
+<!-- Corner Targeting Reticles -->
 <div class="reticle tl"></div>
 <div class="reticle tr"></div>
 <div class="reticle bl"></div>
 <div class="reticle br"></div>
 
+<!-- Presentation Progress Indicator -->
 <div class="progress-bar-container">
   <div class="progress-bar" id="progressBar"></div>
 </div>
 
+<!-- Heads-Up Display & Navigation Hint -->
 <div class="hud">VEER GATHA 6.0 // <span>SESSION 2026-27</span></div>
 <div class="hud-right">SUBJECT: <span>CAPT. VIKRAM BATRA</span> // STATUS: <span>ACTIVE</span></div>
 <div class="hint">[ CLICK / ENTER TO ADVANCE ]</div>
 
+<!-- Slide Navigation Dots -->
 <div class="nav-dots">
   <div class="dot active" data-slide="0"></div>
   <div class="dot" data-slide="1"></div>
@@ -844,6 +853,7 @@ h1, h2, h3, h4 { font-family:'Cinzel', serif; letter-spacing:1px; }
 </div>
 
 <script>
+/* Custom Cursor & Background Parallax */
 const cursor = document.querySelector('.cursor');
 const cursorDot = document.querySelector('.cursor-dot');
 let mouseX = 0, mouseY = 0, cursorX = 0, cursorY = 0;
@@ -872,6 +882,7 @@ function renderCursor() {
 }
 renderCursor();
 
+/* Interactive Card Tilt Effects */
 document.querySelectorAll('.interactive-card').forEach(card => {
   card.addEventListener('mousemove', e => {
     const rect = card.getBoundingClientRect();
@@ -884,6 +895,7 @@ document.querySelectorAll('.interactive-card').forEach(card => {
   });
 });
 
+/* Slide Navigation & Presentation State */
 const slides = document.querySelectorAll('.slide');
 const dots = document.querySelectorAll('.dot');
 const startOverlay = document.getElementById('startOverlay');
@@ -918,6 +930,7 @@ function goToSlide(index) {
 function nextSlide() { goToSlide(currentSlide + 1); }
 function prevSlide() { goToSlide(currentSlide - 1); }
 
+/* Glitch Text Decode Animation */
 function triggerTextDecode() {
   const activeSlide = document.querySelector('.slide.active');
   if (!activeSlide) return;
@@ -953,6 +966,7 @@ function triggerTextDecode() {
   });
 }
 
+/* Start Presentation & Enter Fullscreen */
 startBtn.addEventListener('click', (e) => {
   e.stopPropagation();
   try {
@@ -964,6 +978,7 @@ startBtn.addEventListener('click', (e) => {
   goToSlide(0);
 });
 
+/* Keyboard Controls */
 document.addEventListener('keydown', (e) => {
   if (!startOverlay.classList.contains('hidden')) {
     if (e.key === 'Enter' || e.key === ' ') {
@@ -988,6 +1003,7 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
+/* Click-to-Advance & Particle Burst Effects */
 document.addEventListener('click', (e) => {
   if (!startOverlay.classList.contains('hidden')) return;
   if (e.target.classList.contains('dot')) return;
@@ -1002,15 +1018,18 @@ dots.forEach((dot, i) => {
   dot.addEventListener('click', (e) => { e.stopPropagation(); goToSlide(i); });
 });
 
+/* Progress Bar Updates */
 function updateProgressBar() {
   const progress = ((currentSlide + 1) / slides.length) * 100;
   progressBar.style.width = progress + '%';
 }
 
+/* Canvas Sizing */
 function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
 window.addEventListener('resize', () => { resizeCanvas(); initParticles(); });
 resizeCanvas();
 
+/* Ambient Snow, Ember & Dust Particles */
 class Particle {
   constructor() { this.reset(); this.y = Math.random() * canvas.height; }
   reset() {
@@ -1036,6 +1055,7 @@ class Particle {
   }
 }
 
+/* Click Burst Particle Effect */
 class BurstParticle {
   constructor(x, y) {
     this.x = x; this.y = y;
@@ -1058,12 +1078,14 @@ class BurstParticle {
   }
 }
 
+/* Particle Initialization */
 function initParticles() {
   particles = [];
   const count = window.innerWidth < 768 ? 25 : 45;
   for (let i = 0; i < count; i++) particles.push(new Particle());
 }
 
+/* Particle Animation Loop & Connecting Lines */
 function animateParticles() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   
@@ -1093,6 +1115,7 @@ function animateParticles() {
   animationId = requestAnimationFrame(animateParticles);
 }
 
+/* Choose Particle Style for Each Slide */
 function updateParticles(slideIndex) {
   if (slideIndex === 0 || slideIndex === 2 || slideIndex === 5) particleType = 'snow';
   else if (slideIndex === 4 || slideIndex === 8) particleType = 'embers';
