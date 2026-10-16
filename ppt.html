@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Captain Vikram Batra - Veer Gatha </title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Inter:wght@300;400;600;700&family=Montserrat:ital,wght@0,400;0,700;0,800;0,900;1,400&family=Oswald:wght@300;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#030508;
+  --navy-2:#090e17;
+  --charcoal:#111827;
+  --white:#ffffff;
+  --gold:#F1C40F;
+  --gold-light:#fde68a;
+  --gold-glow:rgba(241, 196, 15, 0.4);
+  --crimson:#EF4444;
+  --crimson-glow:rgba(239, 68, 68, 0.4);
+  --gray:#94A3B8;
+  --glass:rgba(13, 19, 32, 0.85);
+  --glass-border:rgba(241, 196, 15, 0.3);
+  --ease:cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{
+  height:100%; width:100%; overflow:hidden;
+  background:var(--navy); color:var(--white);
+  font-family:'Inter', sans-serif; cursor:none;
+  scrollbar-width: none;
+}
+html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
+
+/* Custom Cursor */
+.cursor{
+  position:fixed; width:28px; height:28px;
+  border:2px solid var(--gold); border-radius:50%;
+  pointer-events:none; z-index:99999;
+  transition:transform 0.1s ease, width 0.2s, height 0.2s, background 0.2s;
+  transform:translate(-50%, -50%);
+  box-shadow: 0 0 15px var(--gold-glow);
+}
+.cursor-dot{
+  position:fixed; width:6px; height:6px;
+  background:var(--gold); border-radius:50%;
+  pointer-events:none; z-index:99999;
+  transform:translate(-50%, -50%);
+  box-shadow: 0 0 10px var(--gold);
+}
+
+@media (hover: none) {
+  .cursor, .cursor-dot { display: none !important; }
+  body { cursor: auto; }
+}
+
+/* Particle Canvas */
+#bg-canvas{ position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; pointer-events:none; }
+
+/* Tactical Background Elements */
+.tactical-bg{
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  z-index:1; pointer-events:none;
+  background-image: 
+    radial-gradient(circle at 50% 50%, rgba(13, 19, 32, 0) 0%, rgba(3, 5, 8, 0.9) 100%),
+    linear-gradient(rgba(241, 196, 15, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(241, 196, 15, 0.03) 1px, transparent 1px);
+  background-size: 100% 100%, 50px 50px, 50px 50px;
+}
+.scanline{
+  position:fixed; top:0; left:0; width:100%; height:3px;
+  background:linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity:0.5; z-index:1; pointer-events:none;
+  animation: scan 8s linear infinite;
+  box-shadow: 0 0 15px var(--gold);
+}
+@keyframes scan { 0%{top:0%} 100%{top:100%} }
+
+.vignette{
+  position:fixed; inset:0; z-index:2; pointer-events:none;
+  background: radial-gradient(circle at center, transparent 35%, rgba(3, 5, 8, 0.9) 100%);
+}
+
+/* Top Progress Bar */
+.progress-bar-container {
+  position: fixed; top: 0; left: 0; width: 100%; height: 5px;
+  background: rgba(255, 255, 255, 0.05); z-index: 1001;
+}
+.progress-bar {
+  height: 100%; width: 11.11%; background: linear-gradient(90deg, var(--gold-light), var(--gold));
+  box-shadow: 0 0 20px var(--gold);
+  transition: width 0.6s var(--ease);
+}
+
+/* Start Overlay */
+.start-overlay{
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  background: linear-gradient(rgba(3,5,8,0.85), rgba(3,5,8,0.95)), url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=1920&auto=format&fit=crop');
+  background-size: cover; background-position: center;
+  z-index:9000; display:flex; flex-direction:column;
+  justify-content:center; align-items:center; text-align:center; padding: 20px;
+  transition:opacity 0.8s ease, visibility 0.8s; perspective:1000px;
+}
+.start-overlay.hidden{ opacity:0; visibility:hidden; pointer-events:none; }
+.start-eyebrow{
+  font-family:'Space Mono', monospace; font-size:12px; color:var(--crimson);
+  letter-spacing:4px; margin-bottom:15px; text-transform:uppercase;
+  text-shadow: 0 0 10px var(--crimson-glow);
+}
+.start-title{
+  font-family:'Cinzel', serif; font-size:clamp(30px, 6vw, 80px); font-weight:900;
+  color:var(--white); margin-bottom:15px; letter-spacing:3px; text-transform:uppercase;
+  text-shadow:0 0 50px rgba(241, 196, 15, 0.3), 0 0 20px rgba(0,0,0,0.8);
+  background: linear-gradient(180deg, #ffffff 30%, var(--gold-light) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.start-sub{ font-family:'Oswald',sans-serif; color:var(--gold); margin-bottom:30px; font-size:clamp(14px, 2vw, 18px); letter-spacing:3px; text-transform:uppercase; text-shadow: 0 0 15px var(--gold-glow); }
+
+.start-btn-wrapper{ perspective:1000px; margin-bottom:20px; position:relative; }
+.start-btn{
+  background:linear-gradient(135deg, #1f293d 0%, #090e17 100%);
+  border:2px solid var(--gold); color:var(--gold);
+  padding:16px 35px; font-size:15px; font-family:'Oswald',sans-serif;
+  letter-spacing:3px; text-transform:uppercase; cursor:pointer;
+  position:relative; transform-style:preserve-3d; overflow:hidden;
+  transition:all 0.3s var(--ease); box-shadow:0 15px 40px rgba(0,0,0,0.7), 0 0 20px rgba(241,196,15,0.15);
+}
+.start-btn::after{
+  content:''; position:absolute; inset:-50%;
+  background:linear-gradient(90deg, transparent, rgba(241,196,15,0.6), transparent);
+  transform:rotate(45deg) translateX(-100%);
+  animation: beam 3s infinite;
+}
+@keyframes beam { 0%{transform:rotate(45deg) translateX(-100%)} 100%{transform:rotate(45deg) translateX(100%)} }
+
+.start-btn:hover{
+  transform:translateZ(25px) rotateX(10deg);
+  box-shadow:0 25px 50px rgba(0,0,0,0.9), 0 0 35px var(--gold-glow);
+  background:linear-gradient(135deg, var(--gold) 0%, #b7950b 100%);
+  color:#030508; font-weight: 700;
+}
+.start-instructions{ font-family:'Space Mono', monospace; font-size:10px; color:var(--gray); letter-spacing: 1px; }
+
+/* Presentation Container */
+#presentation { 
+  position:relative; width:100%; height:100%; z-index:3; 
+  overflow:hidden; 
+}
+
+.slide{
+  position:absolute; inset:0; opacity:0; visibility:hidden; 
+  transform:scale(0.96) translateY(30px); filter: blur(10px);
+  transition:transform 0.9s var(--ease), opacity 0.8s var(--ease), filter 0.8s var(--ease), visibility 0.9s;
+  display:flex; flex-direction:column; justify-content:center;
+  padding:6vh 6vw; pointer-events:none; 
+  overflow-y: auto; overflow-x: hidden;
+  scrollbar-width: none;
+}
+.slide::-webkit-scrollbar { display: none; }
+
+.slide.active{ opacity:1; visibility:visible; transform:scale(1) translateY(0); filter: blur(0); pointer-events:auto; z-index:10; }
+.slide.prev{ opacity:0; transform:scale(1.04) translateY(-30px); filter: blur(10px); }
+.slide.next{ opacity:0; transform:scale(0.96) translateY(30px); filter: blur(10px); }
+
+/* Typography & UI */
+h1, h2, h3, h4 { font-family:'Cinzel', serif; letter-spacing:1px; }
+.eyebrow{
+  font-family:'Oswald', sans-serif; font-size:12px; letter-spacing:5px;
+  text-transform:uppercase; color:var(--gold); margin-bottom:12px;
+  display:flex; align-items:center; gap:12px; text-shadow: 0 0 10px var(--gold-glow);
+}
+.eyebrow::before{ content:''; width:35px; height:2px; background:var(--gold); box-shadow:0 0 15px var(--gold); }
+
+/* HUD Elements */
+.hud{
+  position:fixed; top:15px; left:20px; z-index:1000;
+  font-family:'Space Mono', monospace; font-size:9px; color:rgba(255,255,255,0.5); letter-spacing: 1px;
+}
+.hud span{color:var(--gold); text-shadow: 0 0 8px var(--gold-glow);}
+.hud-right{
+  position:fixed; top:15px; right:20px; z-index:1000; text-align:right;
+  font-family:'Space Mono', monospace; font-size:9px; color:rgba(255,255,255,0.5); letter-spacing: 1px;
+}
+.hint{
+  position:fixed; bottom:15px; left:20px; z-index:1000;
+  font-family:'Space Mono', monospace; font-size:9px; color:rgba(255,255,255,0.35); letter-spacing: 1px;
+}
+
+/* Targeting Reticles */
+.reticle{
+  position:fixed; width:25px; height:25px; border:1px solid rgba(241, 196, 15, 0.4);
+  z-index:1000; pointer-events:none; transition: all 0.3s ease;
+}
+.reticle.tl{ top:10px; left:10px; border-right:0; border-bottom:0; }
+.reticle.tr{ top:10px; right:10px; border-left:0; border-bottom:0; }
+.reticle.bl{ bottom:10px; left:10px; border-right:0; border-top:0; }
+.reticle.br{ bottom:10px; right:10px; border-left:0; border-top:0; }
+
+/* Nav Dots */
+.nav-dots{ position:fixed; bottom:15px; left:50%; transform:translateX(-50%); display:flex; gap:8px; z-index:1000; }
+.dot{
+  width:7px; height:7px; background:rgba(255,255,255,0.2);
+  border-radius:0; transform:rotate(45deg); cursor:pointer; transition:all 0.4s var(--ease);
+}
+.dot:hover { background: rgba(241, 196, 15, 0.6); transform: rotate(45deg) scale(1.3); }
+.dot.active{ background:var(--gold); transform:rotate(45deg) scale(1.5); box-shadow:0 0 15px var(--gold); }
+
+/* Slide Backgrounds */
+.bg-layer {
+  position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  transform: scale(1.03);
+  transition: transform 0.1s ease-out;
+}
+#s1-bg{ background: linear-gradient(180deg, rgba(3,5,8,0.75) 0%, rgba(9,14,23,0.92) 100%), url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=1920&auto=format&fit=crop'); background-size: cover; background-position: center; }
+#s2-bg{ background: radial-gradient(circle at 85% 15%, rgba(239,68,68,0.12) 0%, transparent 55%), radial-gradient(circle at 15% 85%, rgba(241,196,15,0.12) 0%, transparent 55%), linear-gradient(135deg, rgba(3,5,8,0.88) 0%, rgba(16,24,39,0.96) 100%), url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1920&auto=format&fit=crop'); background-size: cover; background-position: center; background-blend-mode: overlay; }
+#s3-bg{ background: radial-gradient(circle at 20% 80%, rgba(241,196,15,0.15) 0%, transparent 60%), radial-gradient(circle at 80% 20%, rgba(16,24,39,0.9) 0%, rgba(3,5,8,0.98) 100%), linear-gradient(135deg, rgba(3,5,8,0.85) 0%, rgba(9,14,23,0.95) 100%), url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=1920&auto=format&fit=crop'); background-size: cover; background-position: center; background-blend-mode: overlay; }
+#s4-bg{ background: radial-gradient(ellipse at 50% 50%, rgba(16,26,45,0.85) 0%, rgba(3,5,8,0.97) 100%), url('https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1920&auto=format&fit=crop'); background-size: cover; background-position: center; background-blend-mode: overlay; }
+#s5-bg{ background: radial-gradient(circle at 30% 50%, rgba(239,68,68,0.15) 0%, transparent 65%), linear-gradient(rgba(3,5,8,0.85), rgba(3,5,8,0.97)), url('https://images.unsplash.com/photo-1517824806704-9040b037703b?q=80&w=1920&auto=format&fit=crop'); background-size: cover; background-position: center; background-blend-mode: overlay; }
+#s6-bg{ background: linear-gradient(135deg, rgba(3,5,8,0.88) 0%, rgba(31,8,8,0.97) 100%), url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=1920&auto=format&fit=crop'); background-size: cover; background-position: center; background-blend-mode: overlay; }
+#s7-bg{ background: radial-gradient(ellipse at bottom, rgba(241,196,15,0.1) 0%, rgba(3,5,8,0.95) 70%), url('https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?q=80&w=1920&auto=format&fit=crop'); background-size: cover; background-position: center; background-blend-mode: overlay; }
+#s8-bg{ background: radial-gradient(circle at center, rgba(241,196,15,0.12) 0%, rgba(3,5,8,0.95) 80%), url('https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1920&auto=format&fit=crop'); background-size: cover; background-position: center; background-blend-mode: overlay; }
+#s9-bg{ background: linear-gradient(180deg, rgba(3,5,8,0.8) 0%, rgba(9,14,23,0.95) 100%), url('https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1920&auto=format&fit=crop'); background-size: cover; background-position: center; background-blend-mode: overlay; }
+
+.interactive-card {
+  transform-style: preserve-3d;
+  transition: transform 0.15s ease-out, border-color 0.3s, box-shadow 0.3s, background 0.3s;
+}
+
+/* Slide 1 Specifics */
+.s1-glow{
+  position:absolute; top:15%; left:50%; transform:translateX(-50%);
+  width:600px; height:600px; background:radial-gradient(circle, rgba(241,196,15,0.12) 0%, transparent 65%);
+  z-index:1; pointer-events:none; filter: blur(40px);
+}
+.s1-content{ position:relative; z-index:10; text-shadow:0 15px 40px rgba(0,0,0,0.9); }
+.s1-super{ font-family:'Space Mono', monospace; font-size:11px; letter-spacing:3px; color:var(--gold); margin-bottom:20px; opacity:0.9; text-shadow: 0 0 10px var(--gold-glow); }
+.s1-title{
+  font-family:'Cinzel', serif; font-size:clamp(38px, 7vw, 110px); font-weight:900; line-height:0.95;
+  background:linear-gradient(135deg, #ffffff 20%, #e2e8f0 60%, var(--gold) 100%);
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+  margin-bottom:20px; filter: drop-shadow(0 10px 30px rgba(0,0,0,0.8));
+}
+.s1-subtitle{ font-family:'Montserrat',sans-serif; font-style:italic; font-weight:600; font-size:clamp(14px, 1.8vw, 22px); color:var(--gold-light); margin-bottom:30px; text-shadow: 0 0 15px var(--gold-glow); }
+.s1-footer{
+  position:absolute; bottom:5vh; left:6vw; right:6vw; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;
+  border-top:1px solid rgba(241,196,15,0.3); padding-top:12px;
+  font-family:'Space Mono', monospace; letter-spacing:1px; color:rgba(255,255,255,0.7); font-size:10px; z-index:10;
+  background: transparent;
+}
+.s1-footer span{color:var(--gold); font-weight:700; text-shadow: 0 0 8px var(--gold-glow); }
+
+/* Slide 2: Bento Grid */
+.s2-grid{ display:grid; grid-template-columns:0.85fr 1.15fr; gap:20px; align-items: stretch; }
+.profile-card{
+  background:var(--glass); backdrop-filter:blur(25px); border:1px solid var(--glass-border);
+  padding:25px; display:flex; flex-direction:column; justify-content:center;
+  position:relative; overflow:hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+}
+.profile-card:hover{ box-shadow: 0 30px 60px rgba(0,0,0,0.8), 0 0 30px var(--gold-glow); border-color:var(--gold); }
+.profile-card::before{ content:''; position:absolute; top:0; left:0; width:5px; height:100%; background:linear-gradient(180deg, var(--gold) 0%, var(--crimson) 100%); box-shadow:0 0 20px var(--gold); }
+.profile-rank{ font-family:'Space Mono', monospace; color:var(--gold); letter-spacing:2px; margin-bottom:8px; font-size:10px; text-shadow: 0 0 8px var(--gold-glow); }
+.profile-name{ font-family:'Cinzel',serif; font-size:clamp(24px, 3vw, 40px); font-weight:900; line-height:1.1; margin-bottom:8px; }
+.profile-quote{ font-style:italic; color:var(--gray); font-size:13px; margin-top:15px; padding-left:12px; border-left:2px solid var(--gold); line-height:1.4; }
+
+.bento-container{ display:grid; grid-template-columns:1fr 1fr; gap:12px; align-content: start; }
+.bento-item{
+  background:var(--glass); backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,0.08);
+  padding:16px; position:relative; overflow:hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4); display: flex; flex-direction: column; justify-content: center;
+}
+.bento-item:hover{ border-color:var(--gold); background:rgba(241,196,15,0.06); box-shadow:0 20px 40px rgba(0,0,0,0.6), 0 0 20px var(--gold-glow); }
+.bento-icon{ width:26px; height:26px; color:var(--gold); margin-bottom:10px; filter:drop-shadow(0 0 8px var(--gold-glow)); }
+.bento-label{ font-family:'Space Mono', monospace; font-size:8.5px; letter-spacing:2px; color:var(--gold); text-transform:uppercase; margin-bottom:3px; }
+.bento-text{ font-family:'Montserrat',sans-serif; font-size:15px; font-weight:700; line-height:1.2; }
+.bento-sub{ font-size:11px; color:rgba(255,255,255,0.6); margin-top:3px; font-weight:300; }
+
+/* Slide 3: Timeline */
+.s3-timeline-wrap{ display:flex; justify-content:space-between; gap:12px; margin-top:25px; position:relative; }
+.s3-timeline-wrap::before{ content:''; position:absolute; top:30px; left:5%; right:5%; height:2px; background:linear-gradient(90deg, transparent 0%, var(--gold) 20%, var(--gold) 80%, transparent 100%); box-shadow:0 0 15px var(--gold); }
+.timeline-item{ width:23%; text-align:left; position:relative; z-index:5; }
+.timeline-node{
+  width:60px; height:60px; background:var(--navy); border:2px solid var(--gold);
+  border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-family:'Oswald',sans-serif; font-size:18px; font-weight:700; color:var(--gold);
+  margin-bottom:15px; box-shadow:0 0 25px var(--gold-glow); position:relative;
+}
+.timeline-node::after{ content:''; position:absolute; inset:-5px; border:1px solid rgba(241,196,15,0.3); border-radius:50%; animation: pulse-ring 3s infinite; }
+@keyframes pulse-ring { 0%,100%{transform:scale(1); opacity:0.8;} 50%{transform:scale(1.12); opacity:0.2;} }
+.timeline-content h4{ font-size:16px; margin-bottom:6px; color:var(--white); font-family:'Cinzel', serif; }
+.timeline-content p{ font-size:12px; color:rgba(255,255,255,0.75); line-height:1.4; }
+
+/* Slide 4: Process */
+.s4-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:20px; margin-top:20px; }
+.process-card{
+  background:var(--glass); backdrop-filter:blur(15px); border:1px solid rgba(241,196,15,0.25);
+  padding:25px 20px; display:flex; flex-direction:column; position:relative;
+  clip-path:polygon(0 0, 100% 0, 100% 92%, 92% 100%, 0 100%);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+}
+.process-card:hover{ background:rgba(241,196,15,0.08); border-color:var(--gold); box-shadow: 0 25px 50px rgba(0,0,0,0.7), 0 0 25px var(--gold-glow); }
+.process-num{ font-family:'Oswald',sans-serif; font-size:60px; font-weight:700; color:rgba(255,255,255,0.03); position:absolute; top:10px; right:12px; line-height:1; }
+.process-icon{ width:38px; height:38px; color:var(--gold); margin-bottom:14px; filter:drop-shadow(0 0 8px var(--gold-glow)); }
+.process-title{ font-size:17px; margin-bottom:8px; font-family:'Cinzel', serif; }
+.process-date{ font-family:'Space Mono', monospace; font-size:9.5px; color:var(--crimson); letter-spacing:1.5px; margin-bottom:8px; text-shadow: 0 0 8px var(--crimson-glow); }
+.process-text{ color:rgba(255,255,255,0.75); line-height:1.4; font-size:12px; }
+
+/* Slide 5: War Stats */
+.s5-container{ display:grid; grid-template-columns:1fr 1fr; gap:35px; align-items:center; }
+.s5-left h2{ font-size:clamp(28px, 3.5vw, 50px); line-height:0.95; margin-bottom:15px; }
+.s5-left p{ font-size:13.5px; color:rgba(255,255,255,0.8); line-height:1.5; margin-bottom:12px; }
+.s5-stats{ display:flex; flex-direction:column; gap:12px; }
+.stat-card{
+  background:var(--glass); border:1px solid rgba(241,196,15,0.3);
+  padding:16px 20px; display:flex; align-items:center; gap:15px; backdrop-filter:blur(15px);
+  clip-path:polygon(0 0, 100% 0, 96% 100%, 0 100%);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+.stat-card:hover{ border-color:var(--gold); box-shadow: 0 15px 40px rgba(0,0,0,0.7), 0 0 20px var(--gold-glow); }
+.stat-num{
+  font-family:'Montserrat',sans-serif; font-size:clamp(24px, 2.8vw, 38px); font-weight:900;
+  background:linear-gradient(180deg, var(--white) 20%, var(--gold) 100%);
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+  min-width:110px; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
+}
+.stat-info h4{ font-family:'Space Mono', monospace; font-size:9.5px; color:var(--gold); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:3px; }
+.stat-info p{ font-size:12px; color:rgba(255,255,255,0.75); }
+
+/* Slide 6: Battle Flow */
+.s6-banner{
+  background:linear-gradient(90deg, rgba(239,68,68,0.2) 0%, rgba(241,196,15,0.2) 100%);
+  border:1px solid var(--gold); padding:16px; text-align:center; margin-top:20px;
+  box-shadow:0 0 35px rgba(241, 196, 15, 0.15); backdrop-filter: blur(10px);
+}
+.s6-banner h2{
+  font-size:clamp(18px, 2.4vw, 32px); font-family:'Cinzel', serif;
+  background:linear-gradient(90deg, var(--gold) 0%, var(--white) 50%, var(--gold) 100%);
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+  filter: drop-shadow(0 0 15px var(--gold-glow));
+}
+.s6-flow{ display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; margin-top:20px; }
+.flow-step{ background:var(--glass); backdrop-filter:blur(15px); border-top:3px solid var(--crimson); padding:18px; position:relative; box-shadow: 0 15px 35px rgba(0,0,0,0.5); }
+.flow-step:nth-child(even){ transform:translateY(15px); border-top:3px solid var(--gold); }
+.flow-num{ font-family:'Space Mono', monospace; color:var(--gold); font-size:9px; letter-spacing:2px; margin-bottom:8px; text-shadow: 0 0 8px var(--gold-glow); }
+.flow-text{ font-size:12.5px; font-weight:700; line-height:1.3; font-family:'Montserrat', sans-serif; }
+
+/* Slide 7: Sacrifice */
+.s7-quote-box{
+  background:rgba(3,5,8,0.8); border:1px solid var(--gold);
+  padding:20px; text-align:center; margin-top:20px; position:relative;
+  box-shadow:0 0 35px rgba(0,0,0,0.6), 0 0 20px var(--gold-glow); backdrop-filter: blur(15px);
+}
+.s7-quote-box::before, .s7-quote-box::after{ content:''; position:absolute; width:15px; height:15px; border:2px solid var(--gold); }
+.s7-quote-box::before{top:-1px;left:-1px;border-right:0;border-bottom:0;}
+.s7-quote-box::after{bottom:-1px;right:-1px;border-left:0;border-top:0;}
+.s7-quote{ font-family:'Cinzel',serif; font-style:italic; font-size:clamp(13px, 1.5vw, 19px); line-height:1.4; color:var(--white); text-shadow: 0 0 10px rgba(255,255,255,0.3); }
+.s7-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; margin-top:16px; }
+.scene-card{ background:var(--glass); backdrop-filter:blur(15px); border:1px solid rgba(239,68,68,0.3); padding:18px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); }
+.scene-icon{ color:var(--crimson); width:30px; height:30px; margin-bottom:10px; filter:drop-shadow(0 0 10px var(--crimson-glow)); }
+.scene-title{ font-size:16px; margin-bottom:6px; color:var(--gold); font-family:'Cinzel', serif; }
+.scene-text{ color:rgba(255,255,255,0.75); line-height:1.4; font-size:12px; }
+
+/* Slide 8: PVC */
+.s8-layout{ display:grid; grid-template-columns:0.85fr 1.15fr; gap:30px; align-items:center; }
+.medal-container{ display:flex; flex-direction:column; align-items:center; text-align:center; }
+.medal-svg{ width:140px; height:140px; filter:drop-shadow(0 0 40px rgba(241,196,15,0.5)); margin-bottom:15px; animation:pulse-medal 3.5s infinite ease-in-out; }
+@keyframes pulse-medal { 0%,100%{transform:scale(1)} 50%{transform:scale(1.06)} }
+.medal-citation{ font-style:italic; color:var(--gold-light); font-size:12px; border-top:1px solid var(--gold); padding-top:12px; line-height: 1.4; }
+.checklist{ display:flex; flex-direction:column; gap:10px; }
+.check-item{
+  background:var(--glass); backdrop-filter:blur(15px); border-left:4px solid var(--gold);
+  padding:12px 16px; display:flex; gap:12px; align-items:center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+.check-num{ font-family:'Oswald',sans-serif; font-size:22px; color:var(--gold); font-weight:700; text-shadow: 0 0 10px var(--gold-glow); }
+.check-content h4{ font-size:14px; margin-bottom:2px; font-family:'Cinzel', serif; }
+.check-content p{ color:rgba(255,255,255,0.75); font-size:11.5px; }
+
+/* Slide 9: Legacy */
+.s9-values{ display:grid; grid-template-columns:repeat(2, 1fr); gap:12px; margin-bottom:20px; }
+.value-card{
+  background:var(--glass); border:1px solid rgba(241,196,15,0.25);
+  padding:16px 20px; display:flex; align-items:center; gap:15px; backdrop-filter:blur(15px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+.val-icon{ width:32px; height:32px; color:var(--gold); flex-shrink:0; filter:drop-shadow(0 0 8px var(--gold-glow)); }
+.val-title{ font-size:16px; margin-bottom:2px; color:var(--white); font-family:'Cinzel', serif; }
+.val-text{ color:rgba(255,255,255,0.75); font-size:12px; }
+
+.s9-outro{
+  background:linear-gradient(90deg, transparent 0%, rgba(239,68,68,0.2) 50%, transparent 100%);
+  border-top:2px solid var(--gold); border-bottom:2px solid var(--gold);
+  padding:18px; text-align:center; box-shadow:0 0 40px rgba(241, 196, 15, 0.15); backdrop-filter: blur(15px);
+}
+
+.indian-flag-badge {
+  display: flex;
+  flex-direction: column;
+  width: 90px;
+  height: 60px;
+  margin: 0 auto 12px auto;
+  border: 1px solid rgba(241, 196, 15, 0.6);
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.25);
+  position: relative;
+}
+.flag-stripe { width: 100%; height: 33.33%; }
+.flag-saffron { background: #FF9933; }
+.flag-white { background: #FFFFFF; display: flex; align-items: center; justify-content: center; position: relative; }
+.flag-green { background: #138808; }
+
+.ashoka-chakra-svg {
+  width: 16px;
+  height: 16px;
+  animation: spin-chakra 15s linear infinite;
+}
+@keyframes spin-chakra { 100% { transform: rotate(360deg); } }
+
+.s9-outro h1{
+  font-size:clamp(26px, 3.5vw, 44px); letter-spacing:4px; margin-bottom: 4px; font-family:'Cinzel', serif;
+  background:linear-gradient(135deg, var(--gold) 0%, var(--white) 50%, var(--gold) 100%);
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+  filter: drop-shadow(0 0 20px var(--gold-glow));
+}
+.s9-outro p{ font-family:'Space Mono', monospace; font-size:10px; letter-spacing:3px; color:var(--gold); margin-top:4px; text-shadow: 0 0 10px var(--gold-glow); }
+
+/* Animations */
+.active .anim-in { animation:slideUp 0.9s var(--ease) forwards; opacity:0; }
+.active .anim-in-2 { animation-delay:0.15s; }
+.active .anim-in-3 { animation-delay:0.3s; }
+.active .anim-in-4 { animation-delay:0.45s; }
+.active .anim-in-5 { animation-delay:0.6s; }
+
+@keyframes slideUp{
+  from{transform:translateY(30px);opacity:0; filter: blur(5px);}
+  to{transform:translateY(0);opacity:1; filter: blur(0);}
+}
+
+/* SMART MOBILE OPTIMIZATION OVERRIDES */
+@media (max-width: 768px) {
+  .slide { padding: 60px 16px 30px 16px !important; }
+  .s2-grid, .s5-container, .s8-layout, .s4-grid, .s6-flow, .s7-grid, .s9-values {
+    grid-template-columns: 1fr !important; display: flex !important; flex-direction: column !important; gap: 14px !important;
+  }
+  .s3-timeline-wrap { flex-direction: column !important; gap: 16px !important; }
+  .s3-timeline-wrap::before { display: none !important; }
+  .timeline-item { width: 100% !important; display: flex !important; gap: 12px !important; align-items: flex-start !important; }
+  .timeline-node { width: 45px !important; height: 45px !important; font-size: 14px !important; margin-bottom: 0 !important; flex-shrink: 0 !important; }
+  .bento-container { grid-template-columns: 1fr 1fr !important; }
+  .flow-step:nth-child(even) { transform: none !important; }
+  .hud, .hud-right, .hint { font-size: 8px !important; }
+  .reticle { width: 18px !important; height: 18px !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="tactical-bg"></div>
+<div class="scanline"></div>
+<div class="vignette"></div>
+<div class="cursor"></div>
+<div class="cursor-dot"></div>
+<canvas id="bg-canvas"></canvas>
+
+<div class="reticle tl"></div>
+<div class="reticle tr"></div>
+<div class="reticle bl"></div>
+<div class="reticle br"></div>
+
+<div class="progress-bar-container">
+  <div class="progress-bar" id="progressBar"></div>
+</div>
+
+<div class="hud">VEER GATHA 6.0 // <span>SESSION 2026-27</span></div>
+<div class="hud-right">SUBJECT: <span>CAPT. VIKRAM BATRA</span> // STATUS: <span>ACTIVE</span></div>
+<div class="hint">[ CLICK / ENTER TO ADVANCE ]</div>
+
+<div class="nav-dots">
+  <div class="dot active" data-slide="0"></div>
+  <div class="dot" data-slide="1"></div>
+  <div class="dot" data-slide="2"></div>
+  <div class="dot" data-slide="3"></div>
+  <div class="dot" data-slide="4"></div>
+  <div class="dot" data-slide="5"></div>
+  <div class="dot" data-slide="6"></div>
+  <div class="dot" data-slide="7"></div>
+  <div class="dot" data-slide="8"></div>
+</div>
+
+<!-- Start Overlay -->
+<div class="start-overlay" id="startOverlay">
+  <div class="start-eyebrow">// MASTERPIECE TACTICAL SYSTEM INITIALIZED</div>
+  <div class="start-title">CAPTAIN VIKRAM BATRA</div>
+  <div class="start-sub">Param Vir Chakra · Kargil War 1999</div>
+  <div class="start-btn-wrapper">
+    <button class="start-btn" id="startBtn">Enter Presentation</button>
+  </div>
+  <div class="start-instructions">Presented by Shiven Guru · DAV Public School Brs Nagar</div>
+</div>
+
+<!-- Presentation -->
+<div id="presentation">
+
+  <!-- Slide 1 -->
+  <div class="slide active" id="slide-1">
+    <div class="bg-layer" id="s1-bg">
+      <div class="s1-glow"></div>
+    </div>
+    <div class="s1-content">
+      <div class="s1-super anim-in">PROJECT VEER GATHA 6.0 · SESSION 2026-27</div>
+      <div class="s1-title anim-in anim-in-2 glitch-text">CAPTAIN<br>VIKRAM BATRA</div>
+      <div class="s1-subtitle anim-in anim-in-3">"Sher Shah" — The Code Name the Enemy Feared</div>
+    </div>
+    <div class="s1-footer anim-in anim-in-4">
+      <div>Presented by: <span>SHIVEN GURU</span></div>
+      <div>School: <span>DAV PUBLIC SCHOOL BRS NAGAR</span></div>
+      <div>Class: <span>8<SUP>th</SUP> E</span></div>
+    </div>
+  </div>
+
+  <!-- Slide 2 -->
+  <div class="slide" id="slide-2">
+    <div class="bg-layer" id="s2-bg"></div>
+    <div class="eyebrow anim-in">Chapter 01 · The Soldier</div>
+    <h2 style="font-size:clamp(22px, 3.2vw, 42px); margin-bottom:20px;" class="anim-in anim-in-2 glitch-text">Who Was <span style="color:var(--gold);">Captain Vikram Batra?</span></h2>
+    <div class="s2-grid">
+      <div class="profile-card interactive-card anim-in anim-in-3">
+        <div class="profile-rank">CAPTAIN · 13 JAK RIFLES</div>
+        <div class="profile-name">Vikram Batra</div>
+        <div style="color:var(--gold-light); font-style:italic; margin-bottom:10px; font-size:13px;">"Sher Shah" · PVC (Posthumous)</div>
+        <p style="color:rgba(255,255,255,0.8); font-size:13.5px; line-height:1.4;">A 24-Year Legacy of Ultimate Valor. The youngest officer to win the Param Vir Chakra in the Kargil War.</p>
+        <div class="profile-quote">"Winners don't do different things. They do things differently."</div>
+      </div>
+      <div class="bento-container">
+        <div class="bento-item interactive-card anim-in anim-in-3">
+          <svg class="bento-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>
+          <div class="bento-label">Born</div>
+          <div class="bento-text">9 Sept 1974</div>
+          <div class="bento-sub">Palampur, H.P.</div>
+        </div>
+        <div class="bento-item interactive-card anim-in anim-in-4">
+          <svg class="bento-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9 10l3-3 3 3"/></svg>
+          <div class="bento-label">Nickname</div>
+          <div class="bento-text">"Sher Shah"</div>
+          <div class="bento-sub">Given by enemy</div>
+        </div>
+        <div class="bento-item interactive-card anim-in anim-in-4">
+          <svg class="bento-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l9 4v6c0 5-3.5 9-9 10-5.5-1-9-5-9-10V6l9-4z"/></svg>
+          <div class="bento-label">Regiment</div>
+          <div class="bento-text">13 JAK Rifles</div>
+          <div class="bento-sub">J&K Rifles</div>
+        </div>
+        <div class="bento-item interactive-card anim-in anim-in-5">
+          <svg class="bento-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="6"/><path d="M8 12l-2 9 6-3 6 3-2-9"/></svg>
+          <div class="bento-label">Honour</div>
+          <div class="bento-text">Param Vir Chakra</div>
+          <div class="bento-sub">Posthumous</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 3 -->
+  <div class="slide" id="slide-3">
+    <div class="bg-layer" id="s3-bg"></div>
+    <div class="eyebrow anim-in">Chapter 02 · Origins</div>
+    <h2 style="font-size:clamp(22px, 3.2vw, 42px); margin-bottom:10px;" class="anim-in anim-in-2">Early Life & <span style="color:var(--gold);">Education</span></h2>
+    <p class="anim-in anim-in-2" style="font-size:clamp(12px, 1.2vw, 16px); color:rgba(255,255,255,0.75); max-width:800px;">A bright student and sportsperson from the hills of Himachal Pradesh.</p>
+    <div class="s3-timeline-wrap">
+      <div class="timeline-item interactive-card anim-in anim-in-3">
+        <div class="timeline-node">01</div>
+        <div class="timeline-content">
+          <h4>1974</h4>
+          <p>Born in Palampur. Twin brother Vishal, youngest of four. Son of a school principal.</p>
+        </div>
+      </div>
+      <div class="timeline-item interactive-card anim-in anim-in-3">
+        <div class="timeline-node">02</div>
+        <div class="timeline-content">
+          <h4>1985–92</h4>
+          <p>DAV School, Palampur. Excelled in studies, table tennis, and karate at national levels.</p>
+        </div>
+      </div>
+      <div class="timeline-item interactive-card anim-in anim-in-4">
+        <div class="timeline-node">03</div>
+        <div class="timeline-content">
+          <h4>1992–95</h4>
+          <p>DMC College, Chandigarh. B.Sc. Medical Sciences. Joined Air Wing NCC.</p>
+        </div>
+      </div>
+      <div class="timeline-item interactive-card anim-in anim-in-4">
+        <div class="timeline-node">04</div>
+        <div class="timeline-content">
+          <h4>1996</h4>
+          <p>Selected for IMA Dehradun. Turned down a career in the CBI.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 4 -->
+  <div class="slide" id="slide-4">
+    <div class="bg-layer" id="s4-bg"></div>
+    <div class="eyebrow anim-in">Chapter 03 · Training</div>
+    <h2 style="font-size:clamp(22px, 3.2vw, 42px); margin-bottom:10px;" class="anim-in anim-in-2">A Soldier <span style="color:var(--gold);">in the Making</span></h2>
+    <div class="s4-grid">
+      <div class="process-card interactive-card anim-in anim-in-3">
+        <div class="process-num">01</div>
+        <svg class="process-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l9 4v6c0 5-3.5 9-9 10-5.5-1-9-5-9-10V6l9-4z"/><path d="M9 12l2 2 4-4"/></svg>
+        <div class="process-title">Indian Military Academy</div>
+        <div class="process-date">DEHRADUN · 1996-97</div>
+        <p class="process-text">Trained hard, excelled in discipline and leadership, earned title of Gentleman Cadet.</p>
+      </div>
+      <div class="process-card interactive-card anim-in anim-in-4">
+        <div class="process-num">02</div>
+        <svg class="process-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6l9-3 9 3M3 6v12l9 3 9-3V6M3 6l9 3 9-3M12 9v12"/></svg>
+        <div class="process-title">Commissioned</div>
+        <div class="process-date">16 DEC 1997</div>
+        <p class="process-text">Joined 13 JAK Rifles as Lieutenant, famed for brave hill soldiers.</p>
+      </div>
+      <div class="process-card interactive-card anim-in anim-in-5">
+        <div class="process-num">03</div>
+        <svg class="process-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h7l-2 8 10-12h-7l2-8z"/></svg>
+        <div class="process-title">Promoted to Captain</div>
+        <div class="process-date">1999</div>
+        <p class="process-text">Led Delta Company with unmatched energy and his famous war cry.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 5 -->
+  <div class="slide" id="slide-5">
+    <div class="bg-layer" id="s5-bg"></div>
+    <div class="s5-container">
+      <div class="s5-left">
+        <div class="eyebrow anim-in">Chapter 04 · The War</div>
+        <h2 class="anim-in anim-in-2">The Kargil <br><span style="color:var(--crimson);">War, 1999</span></h2>
+        <p class="anim-in anim-in-3">Pakistani soldiers secretly occupied high mountain posts on India's side of the LoC.</p>
+        <p class="anim-in anim-in-3">Captain Batra led from the front, climbing vertical cliffs in -10°C, forcing the enemy to retreat peak after peak.</p>
+      </div>
+      <div class="s5-stats">
+        <div class="stat-card interactive-card anim-in anim-in-3">
+          <div class="stat-num">18,000<span style="font-size:16px; color:var(--gold);">ft</span></div>
+          <div class="stat-info">
+            <h4>Frozen Peaks</h4>
+            <p>Heights of mountains at -10°C</p>
+          </div>
+        </div>
+        <div class="stat-card interactive-card anim-in anim-in-4">
+          <div class="stat-num">~2<span style="font-size:16px; color:var(--gold);">Months</span></div>
+          <div class="stat-info">
+            <h4>Operation Vijay</h4>
+            <p>May–July 1999 duration</p>
+          </div>
+        </div>
+        <div class="stat-card interactive-card anim-in anim-in-5">
+          <div class="stat-num">527<span style="font-size:16px; color:var(--gold);">Heroes</span></div>
+          <div class="stat-info">
+            <h4>Supreme Sacrifice</h4>
+            <p>Indian soldiers who laid down lives</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 6 -->
+  <div class="slide" id="slide-6">
+    <div class="bg-layer" id="s6-bg"></div>
+    <div class="eyebrow anim-in">Chapter 05 · Point 5140</div>
+    <h2 style="font-size:clamp(22px, 3.2vw, 42px); margin-bottom:5px;" class="anim-in anim-in-2">Capture of <span style="color:var(--gold);">Point 5140</span></h2>
+    <p class="anim-in anim-in-2" style="color:rgba(255,255,255,0.75); font-size:12px;">20 June 1999 — The gateway to Kargil's heights.</p>
+    <div class="s6-flow">
+      <div class="flow-step interactive-card anim-in anim-in-3">
+        <div class="flow-num">STEP 01</div>
+        <div class="flow-text">The Peak: Icy mountaintop held by enemy machine guns.</div>
+      </div>
+      <div class="flow-step interactive-card anim-in anim-in-3">
+        <div class="flow-num">STEP 02</div>
+        <div class="flow-text">The Plan: Led Delta Company from a steep, unexpected cliff side.</div>
+      </div>
+      <div class="flow-step interactive-card anim-in anim-in-4">
+        <div class="flow-num">STEP 03</div>
+        <div class="flow-text">The Battle: Charged up under heavy fire, destroying positions.</div>
+      </div>
+      <div class="flow-step interactive-card anim-in anim-in-4">
+        <div class="flow-num">STEP 04</div>
+        <div class="flow-text">The Victory: Peak captured by dawn, cracking enemy defenses.</div>
+      </div>
+    </div>
+    <div class="s6-banner anim-in anim-in-5">
+      <h2>"Yeh Dil Maange More!"</h2>
+    </div>
+  </div>
+
+  <!-- Slide 7 -->
+  <div class="slide" id="slide-7">
+    <div class="bg-layer" id="s7-bg"></div>
+    <div class="eyebrow anim-in">Chapter 06 · Sacrifice</div>
+    <h2 style="font-size:clamp(22px, 3.2vw, 42px); margin-bottom:5px;" class="anim-in anim-in-2">The Ultimate <span style="color:var(--crimson);">Sacrifice</span></h2>
+    <p class="anim-in anim-in-2" style="color:var(--gold); letter-spacing:1.5px; font-family:'Space Mono', monospace; font-size:11px;">POINT 4875 · 7 JULY 1999</p>
+    <div class="s7-grid">
+      <div class="scene-card interactive-card anim-in anim-in-3">
+        <svg class="scene-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 21s-7-4.5-7-10a5 5 0 0110-1 5 5 0 0110 1c0 5.5-7 10-7 10"/><path d="M9 11l3 3 3-3"/></svg>
+        <h3 class="scene-title">Rescuing a Friend</h3>
+        <p class="scene-text">Rushed through enemy fire to save wounded Lt. Naveen Nagappa.</p>
+      </div>
+      <div class="scene-card interactive-card anim-in anim-in-4">
+        <svg class="scene-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h7l-2 8 10-12h-7l2-8z"/></svg>
+        <h3 class="scene-title">Fighting On</h3>
+        <p class="scene-text">Killed five enemy soldiers in close combat, recapturing the peak.</p>
+      </div>
+      <div class="scene-card interactive-card anim-in anim-in-5">
+        <svg class="scene-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v20M5 9l7-7 7 7"/></svg>
+        <h3 class="scene-title">The Fall of a Hero</h3>
+        <p class="scene-text">Struck in the chest at age 24, leaving behind an immortal legacy.</p>
+      </div>
+    </div>
+    <div class="s7-quote-box anim-in anim-in-5">
+      <p class="s7-quote">"I'll either come back after hoisting the tricolour, or I'll come back wrapped in it — but I'll come back for sure."</p>
+    </div>
+  </div>
+
+  <!-- Slide 8 -->
+  <div class="slide" id="slide-8">
+    <div class="bg-layer" id="s8-bg"></div>
+    <div class="eyebrow anim-in">Chapter 07 · Honour</div>
+    <h2 style="font-size:clamp(22px, 3.2vw, 42px); margin-bottom:20px;" class="anim-in anim-in-2">The <span style="color:var(--gold);">Param Vir Chakra</span></h2>
+    <div class="s8-layout">
+      <div class="medal-container anim-in anim-in-3">
+        <svg class="medal-svg" viewBox="0 0 200 200">
+          <defs>
+            <radialGradient id="medalBg" cx="50%" cy="40%"><stop offset="0%" stop-color="#Fde68a"/><stop offset="60%" stop-color="#F1C40F"/><stop offset="100%" stop-color="#9a7b0c"/></radialGradient>
+            <radialGradient id="centerBg" cx="50%" cy="40%"><stop offset="0%" stop-color="#991B1B"/><stop offset="100%" stop-color="#450a0a"/></radialGradient>
+            <linearGradient id="ribbon" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#9a7b0c"/><stop offset="50%" stop-color="#F1C40F"/><stop offset="100%" stop-color="#9a7b0c"/></linearGradient>
+          </defs>
+          <path d="M85,5 L115,5 L120,40 L80,40 Z" fill="url(#ribbon)"/>
+          <circle cx="100" cy="110" r="70" fill="url(#medalBg)" stroke="#9a7b0c" stroke-width="2"/>
+          <circle cx="100" cy="110" r="55" fill="url(#centerBg)" stroke="#F1C40F" stroke-width="1.5"/>
+          <g fill="#F1C40F" stroke="#9a7b0c" stroke-width=".8">
+            <circle cx="100" cy="50" r="8"/><circle cx="160" cy="110" r="8"/>
+            <circle cx="100" cy="170" r="8"/><circle cx="40" cy="110" r="8"/>
+          </g>
+          <g transform="translate(100,110)">
+            <path d="M0,-30 L8,-9 L30,-9 L13,4 L20,25 L0,12 L-20,25 L-13,4 L-30,-9 L-8,-9 Z" fill="#F1C40F" stroke="#9a7b0c" stroke-width="1"/>
+            <path d="M0,-20 L5,-6 L18,-6 L8,2 L12,17 L0,8 L-12,17 L-8,2 L-18,-6 L-5,-6 Z" fill="#fde68a"/>
+            <circle cx="0" cy="-2" r="3" fill="#991B1B"/>
+          </g>
+        </svg>
+        <div style="font-family:'Oswald'; letter-spacing:3px; color:var(--gold); margin-bottom:4px; font-size:12px;">PARAM VIR CHAKRA</div>
+        <p class="medal-citation">"For the most conspicuous bravery..."<br><br>Received by his father from the President of India: <strong style="color:var(--white);">"Mera Bharat Mahan."</strong></p>
+      </div>
+      <div class="checklist">
+        <div class="check-item interactive-card anim-in anim-in-3">
+          <div class="check-num">01</div>
+          <div class="check-content">
+            <h4>Led From Front on Point 5140</h4>
+            <p>Personally commanded the assault up a near-vertical cliff.</p>
+          </div>
+        </div>
+        <div class="check-item interactive-card anim-in anim-in-4">
+          <div class="check-num">02</div>
+          <div class="check-content">
+            <h4>Charged Machine-Gun Fire</h4>
+            <p>Single-handedly destroyed multiple enemy bunkers.</p>
+          </div>
+        </div>
+        <div class="check-item interactive-card anim-in anim-in-4">
+          <div class="check-num">03</div>
+          <div class="check-content">
+            <h4>Rescued Fellow Officer</h4>
+            <p>Risked his life to save Lt. Naveen Nagappa.</p>
+          </div>
+        </div>
+        <div class="check-item interactive-card anim-in anim-in-5">
+          <div class="check-num">04</div>
+          <div class="check-content">
+            <h4>Made Supreme Sacrifice</h4>
+            <p>Fell to enemy fire, completing his mission and vow.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 9 -->
+  <div class="slide" id="slide-9">
+    <div class="bg-layer" id="s9-bg"></div>
+    <div class="eyebrow anim-in">Chapter 08 · Legacy</div>
+    <h2 style="font-size:clamp(22px, 3vw, 38px); margin-bottom:16px;" class="anim-in anim-in-2">What His <span style="color:var(--gold);">Veer Gatha</span> Teaches Us</h2>
+    <div class="s9-values">
+      <div class="value-card interactive-card anim-in anim-in-3">
+        <svg class="val-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h7l-2 8 10-12h-7l2-8z"/></svg>
+        <div>
+          <div class="val-title">Courage</div>
+          <div class="val-text">Faced the highest, coldest peaks without hesitation.</div>
+        </div>
+      </div>
+      <div class="value-card interactive-card anim-in anim-in-3">
+        <svg class="val-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 21V8l8-4 8 4v13M4 21h16M9 21v-6h6v6"/></svg>
+        <div>
+          <div class="val-title">Patriotism</div>
+          <div class="val-text">Put nation above everything, including life itself.</div>
+        </div>
+      </div>
+      <div class="value-card interactive-card anim-in anim-in-4">
+        <svg class="val-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="5"/><path d="M8 13l-3 9 7-3 7 3-3-9"/></svg>
+        <div>
+          <div class="val-title">Leadership</div>
+          <div class="val-text">Led from the front, setting the example first.</div>
+        </div>
+      </div>
+      <div class="value-card interactive-card anim-in anim-in-4">
+        <svg class="val-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 21s-7-4.5-7-10a5 5 0 0110-1 5 5 0 0110 1c0 5.5-7 10-7 10"/><path d="M9 11l3 3 3-3"/></svg>
+        <div>
+          <div class="val-title">Selflessness</div>
+          <div class="val-text">Service before self to the very end.</div>
+        </div>
+      </div>
+    </div>
+    <div class="s9-outro anim-in anim-in-5">
+      <div class="indian-flag-badge">
+        <div class="flag-stripe flag-saffron"></div>
+        <div class="flag-stripe flag-white">
+          <svg class="ashoka-chakra-svg" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="44" fill="none" stroke="#000088" stroke-width="6"/>
+            <g stroke="#000088" stroke-width="3">
+              <line x1="50" y1="6" x2="50" y2="94"/><line x1="6" y1="50" x2="94" y2="50"/>
+              <line x1="18" y1="18" x2="82" y2="82"/><line x1="18" y1="82" x2="82" y2="18"/>
+              <line x1="30" y1="9" x2="70" y2="91"/><line x1="9" y1="30" x2="91" y2="70"/>
+              <line x1="30" y1="91" x2="70" y2="9"/><line x1="9" y1="70" x2="91" y2="30"/>
+              <line x1="12" y1="24" x2="88" y2="76"/><line x1="24" y1="12" x2="76" y2="88"/>
+              <line x1="12" y1="76" x2="88" y2="24"/><line x1="24" y1="88" x2="76" y2="12"/>
+            </g>
+            <circle cx="50" cy="50" r="9" fill="#000088"/>
+          </svg>
+        </div>
+        <div class="flag-stripe flag-green"></div>
+      </div>
+      <h1>JAI HIND</h1>
+      <p>KEEPING THE FLAME OF COURAGE ALIVE</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const cursor = document.querySelector('.cursor');
+const cursorDot = document.querySelector('.cursor-dot');
+let mouseX = 0, mouseY = 0, cursorX = 0, cursorY = 0;
+
+window.addEventListener('mousemove', e => {
+  mouseX = e.clientX; mouseY = e.clientY;
+  if (cursorDot) {
+    cursorDot.style.left = mouseX + 'px'; cursorDot.style.top = mouseY + 'px';
+  }
+  
+  const pX = (e.clientX / window.innerWidth - 0.5) * 20;
+  const pY = (e.clientY / window.innerHeight - 0.5) * 20;
+  const activeBg = document.querySelector('.slide.active .bg-layer');
+  if (activeBg) {
+    activeBg.style.transform = `translate(${pX}px, ${pY}px) scale(1.04)`;
+  }
+});
+
+function renderCursor() {
+  if (cursor) {
+    cursorX += (mouseX - cursorX) * 0.2;
+    cursorY += (mouseY - cursorY) * 0.2;
+    cursor.style.left = cursorX + 'px'; cursor.style.top = cursorY + 'px';
+  }
+  requestAnimationFrame(renderCursor);
+}
+renderCursor();
+
+document.querySelectorAll('.interactive-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    card.style.transform = `perspective(1000px) rotateX(${-y / 12}deg) rotateY(${x / 12}deg) translateY(-6px)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+  });
+});
+
+const slides = document.querySelectorAll('.slide');
+const dots = document.querySelectorAll('.dot');
+const startOverlay = document.getElementById('startOverlay');
+const startBtn = document.getElementById('startBtn');
+const progressBar = document.getElementById('progressBar');
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+
+let currentSlide = 0;
+let animationId = null;
+let particles = [];
+let particleType = 'snow';
+
+function goToSlide(index) {
+  index = Math.max(0, Math.min(slides.length - 1, index));
+  if (index === currentSlide) return;
+
+  slides.forEach((slide, i) => {
+    slide.classList.remove('active', 'prev', 'next');
+    if (i === index) slide.classList.add('active');
+    else if (i < index) slide.classList.add('prev');
+    else slide.classList.add('next');
+  });
+
+  dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
+  currentSlide = index;
+  updateProgressBar();
+  updateParticles(index);
+  triggerTextDecode();
+}
+
+function nextSlide() { goToSlide(currentSlide + 1); }
+function prevSlide() { goToSlide(currentSlide - 1); }
+
+function triggerTextDecode() {
+  const activeSlide = document.querySelector('.slide.active');
+  if (!activeSlide) return;
+  const glitchElements = activeSlide.querySelectorAll('h2, .profile-name, .bento-text');
+  
+  glitchElements.forEach(el => {
+    if (el.dataset.originalText) return;
+    el.dataset.originalText = el.textContent;
+  });
+
+  glitchElements.forEach(el => {
+    const original = el.dataset.originalText;
+    let iteration = 0;
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#@$%&*";
+    
+    clearInterval(el.interval);
+    el.interval = setInterval(() => {
+      el.innerText = original
+        .split("")
+        .map((char, index) => {
+          if (char === ' ' || char === '·') return char;
+          if (index < iteration) return original[index];
+          return letters[Math.floor(Math.random() * letters.length)];
+        })
+        .join("");
+      
+      if (iteration >= original.length) {
+        clearInterval(el.interval);
+        el.innerText = original;
+      }
+      iteration += 1/2;
+    }, 30);
+  });
+}
+
+startBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  try {
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen();
+    }
+  } catch (err) {}
+  startOverlay.classList.add('hidden');
+  goToSlide(0);
+});
+
+document.addEventListener('keydown', (e) => {
+  if (!startOverlay.classList.contains('hidden')) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      try {
+        if (document.documentElement.requestFullscreen) {
+          document.documentElement.requestFullscreen();
+        }
+      } catch (err) {}
+      startOverlay.classList.add('hidden');
+      goToSlide(0);
+    }
+    return;
+  }
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+  switch(e.key) {
+    case 'ArrowRight': case 'ArrowDown': case ' ': e.preventDefault(); nextSlide(); break;
+    case 'ArrowLeft': case 'ArrowUp': e.preventDefault(); prevSlide(); break;
+    case 'Home': e.preventDefault(); goToSlide(0); break;
+    case 'End': e.preventDefault(); goToSlide(slides.length - 1); break;
+  }
+});
+
+document.addEventListener('click', (e) => {
+  if (!startOverlay.classList.contains('hidden')) return;
+  if (e.target.classList.contains('dot')) return;
+  
+  for (let i = 0; i < 15; i++) {
+    particles.push(new BurstParticle(e.clientX, e.clientY));
+  }
+  nextSlide();
+});
+
+dots.forEach((dot, i) => {
+  dot.addEventListener('click', (e) => { e.stopPropagation(); goToSlide(i); });
+});
+
+function updateProgressBar() {
+  const progress = ((currentSlide + 1) / slides.length) * 100;
+  progressBar.style.width = progress + '%';
+}
+
+function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+window.addEventListener('resize', () => { resizeCanvas(); initParticles(); });
+resizeCanvas();
+
+class Particle {
+  constructor() { this.reset(); this.y = Math.random() * canvas.height; }
+  reset() {
+    this.x = Math.random() * canvas.width; this.y = -10;
+    this.size = Math.random() * 2 + 1; this.speedY = Math.random() * 0.8 + 0.3;
+    this.speedX = Math.random() * 0.4 - 0.2;
+    if (particleType === 'snow') {
+      this.color = 'rgba(255, 255, 255, ' + (Math.random() * 0.6 + 0.2) + ')';
+    } else if (particleType === 'embers') {
+      this.color = 'rgba(241, 196, 15, ' + (Math.random() * 0.7 + 0.3) + ')';
+      this.speedY = -Math.random() * 1.2 - 0.4; this.y = canvas.height + 10;
+    } else {
+      this.color = 'rgba(241, 196, 15, ' + (Math.random() * 0.25 + 0.05) + ')';
+    }
+  }
+  update() {
+    this.y += this.speedY; this.x += this.speedX;
+    if (this.y > canvas.height + 10 || this.y < -10 || this.x < -10 || this.x > canvas.width + 10) this.reset();
+  }
+  draw() {
+    ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fillStyle = this.color; ctx.fill();
+  }
+}
+
+class BurstParticle {
+  constructor(x, y) {
+    this.x = x; this.y = y;
+    const angle = Math.random() * Math.PI * 2;
+    const speed = Math.random() * 5 + 2;
+    this.speedX = Math.cos(angle) * speed;
+    this.speedY = Math.sin(angle) * speed;
+    this.size = Math.random() * 2.5 + 1;
+    this.alpha = 1;
+    this.color = Math.random() > 0.3 ? 'rgba(241, 196, 15, ' : 'rgba(239, 68, 68, ';
+  }
+  update() {
+    this.x += this.speedX; this.y += this.speedY;
+    this.alpha -= 0.035;
+  }
+  draw() {
+    ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fillStyle = this.color + Math.max(0, this.alpha) + ')';
+    ctx.fill();
+  }
+}
+
+function initParticles() {
+  particles = [];
+  const count = window.innerWidth < 768 ? 25 : 45;
+  for (let i = 0; i < count; i++) particles.push(new Particle());
+}
+
+function animateParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 90) {
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.strokeStyle = `rgba(241, 196, 15, ${0.1 * (1 - dist / 90)})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+    }
+  }
+
+  particles.forEach((p, index) => {
+    p.update();
+    p.draw();
+    if (p instanceof BurstParticle && p.alpha <= 0) {
+      particles.splice(index, 1);
+    }
+  });
+  animationId = requestAnimationFrame(animateParticles);
+}
+
+function updateParticles(slideIndex) {
+  if (slideIndex === 0 || slideIndex === 2 || slideIndex === 5) particleType = 'snow';
+  else if (slideIndex === 4 || slideIndex === 8) particleType = 'embers';
+  else particleType = 'dust';
+  initParticles();
+  if (!animationId) animateParticles();
+}
+
+initParticles();
+animateParticles();
+updateProgressBar();
+</script>
+</body>
+</html>
